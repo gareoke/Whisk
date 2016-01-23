@@ -29,21 +29,17 @@ public class MainActivity extends AppCompatActivity{
 
     @InjectView(R.id.event_name) protected EditText mEventName;
     @InjectView(R.id.start_date) protected TextView mStartDate;
-    @InjectView(R.id.start_date) protected TextView mStartTime;
+    @InjectView(R.id.start_time) protected TextView mStartTime;
     @InjectView(R.id.end_date) protected TextView mEndDate;
-    @InjectView(R.id.end_date) protected TextView mEndTime;
+    @InjectView(R.id.end_time) protected TextView mEndTime;
     @InjectView(R.id.location) protected TextView mLocation;
     @InjectView(R.id.details) protected TextView mDetails;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-
-        //Returns day of the week (Monday, Tuesday, Wednesday, etc.) based on the date (month, day, year)
     }
 
     @Override
@@ -80,7 +76,6 @@ public class MainActivity extends AppCompatActivity{
             }
         };
 
-//         Show date picker dialog.
         CalendarDatePickerDialogFragment dialog = new CalendarDatePickerDialogFragment();
         dialog.setOnDateSetListener(dateSetListener);
         dialog.setThemeDark(Boolean.FALSE);
@@ -92,8 +87,9 @@ public class MainActivity extends AppCompatActivity{
         // Create dismiss listener.
         RadialTimePickerDialogFragment.OnTimeSetListener onTimeSetListener = new RadialTimePickerDialogFragment.OnTimeSetListener(){
             @Override
-            public void onTimeSet(RadialTimePickerDialogFragment radialTimePickerDialogFragment, int i, int i1) {
+            public void onTimeSet(RadialTimePickerDialogFragment radialTimePickerDialogFragment, int hour, int minute) {
                 Log.d(TAG, "onTimeSet -- START");
+                getFormattedTime(hour, minute).subscribe(time -> mStartTime.setText(time));
             }
         };
 
@@ -115,18 +111,9 @@ public class MainActivity extends AppCompatActivity{
             }
         };
 
-        // Create dismiss listener.
-        CalendarDatePickerDialogFragment.OnDialogDismissListener dismissListener = new CalendarDatePickerDialogFragment.OnDialogDismissListener() {
-            @Override
-            public void onDialogDismiss(DialogInterface dialoginterface) {
-                // Do something when the user dismisses the dialog.
-            }
-        };
-
         // Show date picker dialog.
         CalendarDatePickerDialogFragment dialog = new CalendarDatePickerDialogFragment();
         dialog.setOnDateSetListener(dateSetListener);
-        dialog.setOnDismissListener(dismissListener);
         dialog.setThemeDark(false);
         dialog.show(getSupportFragmentManager(), "DATE_PICKER_TAG");
     }
@@ -136,8 +123,8 @@ public class MainActivity extends AppCompatActivity{
         // Create dismiss listener.
         RadialTimePickerDialogFragment.OnTimeSetListener onTimeSetListener = new RadialTimePickerDialogFragment.OnTimeSetListener(){
             @Override
-            public void onTimeSet(RadialTimePickerDialogFragment radialTimePickerDialogFragment, int i, int i1) {
-                Log.d(TAG, "onTimeSet -- START");
+            public void onTimeSet(RadialTimePickerDialogFragment radialTimePickerDialogFragment, int hour, int minute) {
+                getFormattedTime(hour, minute).subscribe(time -> mEndTime.setText(time));
             }
         };
 
@@ -148,17 +135,32 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    // @param year - an integer representing the calendar year
+    // @param monthOfYear - an integer representing the calendar month in the year 0 to 11
+    // @param dayOfMonth - an integer representing the calendar day in the month
+    // @return an Observable that emits the day of the week (Monday, Tuesday, Wednesday, etc.) based on the date (month, day, year)
     private Observable<String> getDayOfWeek(int year, int monthOfYear, int dayOfMonth){
         Calendar date = Calendar.getInstance();
         date.set(Calendar.YEAR, year);
         date.set(Calendar.MONTH, monthOfYear);
         date.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-        // Do as you please with the date.
         String weekDay;
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE", Locale.US);
         weekDay = dayFormat.format(date.getTime());
 
         return Observable.just(weekDay);
-}
+    }
+
+    private Observable<String> getFormattedTime(int hour, int minute){
+        StringBuilder fomrattedTime = new StringBuilder();
+        String ampm = " am";
+
+        if(hour > 12){
+            hour -= 12;
+            ampm = " pm";
+        }
+
+        return Observable.just(fomrattedTime.append(hour).append(':').append(minute).append(ampm).toString());
+    }
 }
