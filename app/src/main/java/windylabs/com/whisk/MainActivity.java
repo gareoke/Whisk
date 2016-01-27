@@ -1,7 +1,10 @@
 package windylabs.com.whisk;
 
-import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -20,9 +23,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.observers.Observers;
+import windylabs.com.whisk.views.LocationActivity;
 
 public class MainActivity extends AppCompatActivity{
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -40,13 +41,15 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        setupActionBar();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        return false;
     }
 
     @Override
@@ -120,7 +123,8 @@ public class MainActivity extends AppCompatActivity{
 
     @OnClick(R.id.end_time)
     public void chooseEndTime() {
-        // Create dismiss listener.
+        Log.d(TAG, "chooseEndTime -- START");
+
         RadialTimePickerDialogFragment.OnTimeSetListener onTimeSetListener = new RadialTimePickerDialogFragment.OnTimeSetListener(){
             @Override
             public void onTimeSet(RadialTimePickerDialogFragment radialTimePickerDialogFragment, int hour, int minute) {
@@ -133,6 +137,14 @@ public class MainActivity extends AppCompatActivity{
                 .setStartTime(10, 10);
         rtpd.show(getSupportFragmentManager(), "TIME_PICKER_TAG");
 
+    }
+
+    @OnClick(R.id.location)
+    public void searchLocation(){
+        Log.d(TAG, "searchLocation -- START");
+        Intent intent = new Intent(getApplicationContext(), LocationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     // @param year - an integer representing the calendar year
@@ -152,6 +164,9 @@ public class MainActivity extends AppCompatActivity{
         return Observable.just(weekDay);
     }
 
+    // @param hour - the hour in military time 0 through 23
+    // @param minute - the minute value 0 through 59
+    // @return an Observable that emits the day the time of the day
     private Observable<String> getFormattedTime(int hour, int minute){
         StringBuilder fomrattedTime = new StringBuilder();
         String ampm = " am";
@@ -159,8 +174,24 @@ public class MainActivity extends AppCompatActivity{
         if(hour > 12){
             hour -= 12;
             ampm = " pm";
+        } else if( hour == 0) {
+            hour +=12;
         }
 
         return Observable.just(fomrattedTime.append(hour).append(':').append(minute).append(ampm).toString());
+    }
+
+    private void setupActionBar(){
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayShowCustomEnabled(true);
+
+        ab.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.create_event_background)));
+        ab.setDisplayHomeAsUpEnabled(Boolean.TRUE);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ab.setElevation(0);
+        }
+
+        ab.setCustomView(R.layout.custom_action_bar);
     }
 }

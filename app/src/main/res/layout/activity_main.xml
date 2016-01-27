@@ -1,58 +1,100 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-
-    <EditText
-        android:id="@+id/event_name"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:singleLine="true"
-        android:hint="Event name"/>
-
-    <Space
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity"
+    android:background="@color/create_event_background">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/holo_green_light"/>
-    
-    <TextView
-        android:id="@+id/start_date"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical"
+        android:background="@drawable/create_border">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@android:color/white"
+                android:padding="@dimen/activity_vertical_margin">
+            <TextView
+                android:id="@+id/start_date"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="begin date..."/>
+
+            <TextView
+                android:id="@+id/start_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="begin time..."/>
+            <TextView
+                android:id="@+id/end_date"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="end date..."/>
+            <TextView
+                android:id="@+id/end_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="end time..."/>
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="location..."/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/create_photo"/>
+            </RelativeLayout>    
+                
+            <EditText
+                android:id="@+id/event_name"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:singleLine="true"
+                android:hint="name..."/>
+            <EditText
+                android:id="@+id/details"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="it's the little details..."/>
+            <EditText
+                android:id="@+id/entrance_fee"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="entrance $..."/>
+
+            <EditText
+                android:id="@+id/tags"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/create_row_height"
+                android:hint="#tag it..."/>
+        </LinearLayout>
+    </ScrollView>
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="Start Date"/>
-
-    <TextView
-        android:id="@+id/start_time"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="Start Time"/>
-
-    <TextView
-        android:id="@+id/end_date"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="End Date"/>
-
-    <TextView
-        android:id="@+id/end_time"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="End Time"/>
-
-    <TextView
-        android:id="@+id/location"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:hint="Location"/>
-
-    <TextView
-        android:id="@+id/details"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:hint="Details"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center">
+        <Button
+            android:layout_width="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_height="60dp"
+            android:textColor="@android:color/white"
+            android:background="@color/broadcast_color"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:text="BROADCAST"/>
+    </RelativeLayout>
 
 </LinearLayout>
