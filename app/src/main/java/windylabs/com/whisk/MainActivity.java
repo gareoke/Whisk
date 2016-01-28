@@ -2,6 +2,7 @@ package windylabs.com.whisk;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -9,7 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
@@ -17,15 +20,19 @@ import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFra
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import rx.Observable;
+import windylabs.com.whisk.utils.WhiskConstants;
 import windylabs.com.whisk.views.LocationActivity;
 
 public class MainActivity extends AppCompatActivity{
+    static final int REQUEST_IMAGE_FROM_FILE = 1;
+
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @InjectView(R.id.event_name) protected EditText mEventName;
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity{
     @InjectView(R.id.end_time) protected TextView mEndTime;
     @InjectView(R.id.location) protected TextView mLocation;
     @InjectView(R.id.details) protected TextView mDetails;
+    @InjectView(R.id.event_choose_image) protected ImageView chooseEventImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +155,14 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    @OnClick(R.id.event_choose_image)
+    public void chooseEventImage(){
+        Log.d(TAG, "chooseEventImage -- START");
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE_FROM_FILE);
+    }
+
     // @param year - an integer representing the calendar year
     // @param monthOfYear - an integer representing the calendar month in the year 0 to 11
     // @param dayOfMonth - an integer representing the calendar day in the month
@@ -193,5 +209,43 @@ public class MainActivity extends AppCompatActivity{
         }
 
         ab.setCustomView(R.layout.custom_action_bar);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "onActivityResult -- START");
+
+        if (resultCode == RESULT_OK) {
+            switch(requestCode) {
+                case REQUEST_IMAGE_FROM_FILE:
+                    Log.d(TAG, "onActivityResult -- REQUEST_IMAGE_FROM_FILE");
+
+                    Uri uri = data.getData();
+
+                    if (uri != null) {
+                        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(
+                                getApplicationContext().getContentResolver().getType(uri));
+
+                        String mediaType = getApplicationContext().getContentResolver().getType(uri);
+
+                        String mediaFilename = uri.getLastPathSegment() + "." + extension;
+                        String mediaUrl = WhiskConstants.IMAGE_UPLOAD_PREFIX + mediaFilename;
+
+                        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+                        mediaFilename = "IMAGE_GENERAL" + "_" + timeStamp;
+                        Log.d(TAG, "mediaType: " + mediaType + "-- upload URL: " + mediaUrl);
+
+                        Log.d(TAG, "uri: " + uri);
+//                        mPreviewView.setImageURI(uri);
+                    } else {
+                        Log.d(TAG, "onActivityResult -- REQUEST_IMAGE_FROM_FILE -- mUri is null!");
+                    }
+
+                    break;
+                default:
+            }
+        }
+
     }
 }
