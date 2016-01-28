@@ -22,6 +22,6 @@ public class Location {
     }
 
     public String getFormattedLocation(){
-        return this.address + " " + this.city + ", " + this.state;
+        return this.address + ", " + this.city + " " + this.state;
     }
 }

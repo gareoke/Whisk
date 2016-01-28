@@ -44,7 +44,7 @@ public class LocationActivity extends AppCompatActivity {
         searchForPlacesView = (EditText) findViewById(R.id.search_for_places);
 
         locationRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        this.locationAdapter = new LocationAdapter();
+        this.locationAdapter = new LocationAdapter(getApplicationContext());
         locationRecyclerView.setAdapter(this.locationAdapter);
 
         searchForPlacesView.addTextChangedListener(new TextWatcher() {
