@@ -1,8 +1,10 @@
 package windylabs.com.whisk.views.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,25 +16,36 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+import rx.Subscriber;
 import windylabs.com.whisk.R;
 import windylabs.com.whisk.models.foursquare.Category;
+import windylabs.com.whisk.models.foursquare.Location;
 import windylabs.com.whisk.models.foursquare.Venue;
+import windylabs.com.whisk.utils.OnLocationClickListener;
 import windylabs.com.whisk.views.holders.LocationViewHolder;
 
 /**
  * Created by g.anderson on 1/26/16.
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationViewHolder>{
+    private static final String TAG = LocationAdapter.class.getSimpleName();
     ArrayList<Venue> locationList;
 
     private Context context; //wont this cause memory leaks?...
 
+    private static Observable<View> observable;
+    private OnLocationClickListener onLocationClickListener;
 
-    public LocationAdapter(Context context) {
+    private static Activity activity;
+
+    public LocationAdapter(Context context, Activity parentActivity) {
         super();
 
         this.context = context;
         this.locationList = new ArrayList();
+        this.activity = parentActivity;
+        onLocationClickListener = new OnLocationClickListener(parentActivity);
     }
 
     @Override
@@ -62,8 +75,17 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationViewHolder>{
                     .error(R.drawable.location_default)
                     .into(holder.getIconView());
         }
-        holder.setLocationName(locationList.get(position).getName());
-        holder.setLocationDetails(locationList.get(position).getLocation().getFormattedLocation());
+
+        Venue venue = locationList.get(position);
+        Location location = venue.getLocation();
+        holder.setLocationName(venue.getName());
+        holder.setLocationDetails(location.getFormattedLocation());
+
+        onLocationClickListener = new OnLocationClickListener(this.activity);
+        onLocationClickListener.setVenue(venue);
+        onLocationClickListener.setLocation(location);
+
+        holder.getParentView().setOnClickListener(onLocationClickListener); //v-> Log.d(TAG, "onClick -- START -- " + locationList.get(position).getName()));
     }
 
     @Override
@@ -133,5 +155,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationViewHolder>{
 
     public void addItem(Venue venue){
         locationList.add(0,venue);
+    }
+
+    public static Observable<View> getObservable(){
+        return observable;
     }
 }

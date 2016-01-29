@@ -1,5 +1,6 @@
 package windylabs.com.whisk.views;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,12 +16,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import butterknife.InjectView;
+import butterknife.OnClick;
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+import windylabs.com.whisk.MainActivity;
 import windylabs.com.whisk.R;
+import windylabs.com.whisk.models.foursquare.Location;
+import windylabs.com.whisk.utils.OnLocationClickListener;
 import windylabs.com.whisk.views.adapters.LocationAdapter;
 import windylabs.com.whisk.models.foursquare.ResponseHolder;
 import windylabs.com.whisk.utils.FoursquareService;
@@ -31,7 +36,10 @@ public class LocationActivity extends AppCompatActivity {
 
     @InjectView(R.id.location_list) protected RecyclerView locationRecyclerView;
     @InjectView(R.id.search_for_places) protected EditText searchForPlacesView;
+
     LocationAdapter locationAdapter;
+
+    OnLocationClickListener onLocationClickListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +48,16 @@ public class LocationActivity extends AppCompatActivity {
 
         setupActionBar();
 
-        locationRecyclerView = (RecyclerView) findViewById(R.id.location_list);
-        searchForPlacesView = (EditText) findViewById(R.id.search_for_places);
+        this.onLocationClickListener = new OnLocationClickListener(LocationActivity.this);
 
-        locationRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        this.locationAdapter = new LocationAdapter(getApplicationContext());
-        locationRecyclerView.setAdapter(this.locationAdapter);
+        this.locationRecyclerView = (RecyclerView) findViewById(R.id.location_list);
+        this.searchForPlacesView = (EditText) findViewById(R.id.search_for_places);
 
-        searchForPlacesView.addTextChangedListener(new TextWatcher() {
+        this.locationRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        this.locationAdapter = new LocationAdapter(getApplicationContext(), LocationActivity.this);
+        this.locationRecyclerView.setAdapter(this.locationAdapter);
+
+        this.searchForPlacesView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Log.d(TAG, "beforeTextChanged -- START" + s.toString());

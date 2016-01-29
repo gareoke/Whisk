@@ -47,38 +47,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/create_row_height"
                 android:hint="location..."/>
-            <RelativeLayout
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="155dp">
                 <ImageView
-                    android:id="@+id/event_choose_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/create_photo"/>
-            </RelativeLayout>    
-                
-            <EditText
-                android:id="@+id/event_name"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/create_row_height"
-                android:singleLine="true"
-                android:hint="name..."/>
+                    android:id="@+id/event_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="155dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/event_choose_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentTop="true"
+                        android:src="@drawable/create_photo"/>
+                    <EditText
+                        android:id="@+id/event_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/create_row_height"
+                        android:singleLine="true"
+                        android:layout_alignParentBottom="true"
+                        android:hint="name..."/>
+                </RelativeLayout>
+            </FrameLayout>
             <EditText
                 android:id="@+id/details"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/create_row_height"
+                android:minHeight="@dimen/create_row_height"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
                 android:hint="it's the little details..."/>
             <EditText
-                android:id="@+id/entrance_fee"
+                android:id="@+id/event_fee"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/create_row_height"
+                android:singleLine="true"
                 android:hint="entrance $..."/>
 
             <EditText
-                android:id="@+id/tags"
+                android:id="@+id/event_tags"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/create_row_height"
+                android:singleLine="true"
                 android:hint="#tag it..."/>
         </LinearLayout>
     </ScrollView>

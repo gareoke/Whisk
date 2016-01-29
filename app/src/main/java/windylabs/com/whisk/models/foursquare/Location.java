@@ -24,4 +24,16 @@ public class Location {
     public String getFormattedLocation(){
         return this.address + ", " + this.city + " " + this.state;
     }
+
+    public String getAddress(){
+        return this.address;
+    }
+
+    public String getCity(){
+        return this.city;
+    }
+
+    public String getState(){
+        return this.state;
+    }
 }

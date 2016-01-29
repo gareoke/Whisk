@@ -12,6 +12,7 @@ import windylabs.com.whisk.R;
  * Created by g.anderson on 1/26/16.
  */
 public class LocationViewHolder extends RecyclerView.ViewHolder {
+    View parentView;
     @InjectView(R.id.location_icon) ImageView locationIcon;
     @InjectView(R.id.location_name) TextView locationName;
     @InjectView(R.id.location_details) TextView locationDetails;
@@ -19,10 +20,11 @@ public class LocationViewHolder extends RecyclerView.ViewHolder {
     public LocationViewHolder(View itemView) {
         super(itemView);
 
-        locationIcon = (ImageView) itemView.findViewById(R.id.location_icon);
-        locationName = (TextView) itemView.findViewById(R.id.location_name);
-        locationDetails = (TextView) itemView.findViewById(R.id.location_details);
+        this.parentView = itemView;
 
+        this.locationIcon = (ImageView) itemView.findViewById(R.id.location_icon);
+        this.locationName = (TextView) itemView.findViewById(R.id.location_name);
+        this.locationDetails = (TextView) itemView.findViewById(R.id.location_details);
     }
 
     public void setLocationName(String locationName){
@@ -40,6 +42,8 @@ public class LocationViewHolder extends RecyclerView.ViewHolder {
     public TextView getLocationNameTextView(){
         return this.locationName;
     }
+
+    public View getParentView(){ return this.parentView; }
 
     @Override
     public String toString() {
